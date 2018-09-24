@@ -1,5 +1,15 @@
 {
-  "name": "ucsc_user",
-  "type": "project",
-  "version": "dev-master"
+  "name": "drupal/ucsc_user",
+  "description": "UCSC User so people can login using CruzID and Blue Password",
+  "type": "drupal-module",
+  "homepage": "https://github.com/ucsc-bsoe/ucsc_user",
+  "authors": [
+    {
+      "name": "Kristin Bradham",
+      "homepage": "https://www.drupal.org/u/kristindev",
+      "role": "Maintainer"
+    }
+  ],
+  "license": "GPL-2.0-or-later",
+  "minimum-stability": "dev"
 }
