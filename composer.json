@@ -1,7 +1,7 @@
 {
   "name": "drupal/ucsc_user",
   "description": "UCSC User so people can login using CruzID and Blue Password",
-  "type": "drupal-module",
+  "type": "drupal-custom-module",
   "homepage": "https://github.com/ucsc-bsoe/ucsc_user",
   "authors": [
     {
