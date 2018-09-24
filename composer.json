@@ -1,4 +1,5 @@
 {
   "name": "ucsc_user",
-  "type": "project"
+  "type": "project",
+  "version": "dev-master"
 }
