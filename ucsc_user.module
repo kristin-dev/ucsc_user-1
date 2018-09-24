@@ -1,0 +1,114 @@
+<?php
+
+/**
+ * @file
+ * This module allows users to login with their CruzID and Blue Password.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+
+print $imgLink; // Image path
+
+/**
+ * Implements hook_form_alter().
+ * What we're modifying: /core/modules/user/src/Form/UserLoginForm.php
+ */
+function ucsc_user_form_alter(array &$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id == 'user_login_form') {
+    $cruzidImage = '/' . drupal_get_path('module', 'ucsc_user') . '/cruzid-blue-large.png';
+
+    $form['name']['#prefix'] = '<h1>Please login with your CruzID Blue</h1><p><img src="'. $cruzidImage .'"></p>';
+
+    $form['name']['#title'] = 'CruzID.';
+    $form['name']['#description'] = 'Please enter your CruzID.';
+
+    $form['pass']['#title'] = 'CruzID Blue Password.';
+    $form['pass']['#description'] = 'Please enter your CruzID Blue Password.';
+  } else if($form_id == 'user_form') {
+    // Add a general message to let people know where to update their information
+    // if necessary.
+    $form["account"]["cruzid"] = array(
+      "#type" => "fieldset",
+      "#title" => "Campus Directory Information",
+      "#description" =>
+        "<p>This account is authenticated through CruzID Blue. Therefore, the 
+         login name, password and e-mail address cannot be edited through this 
+         form. Please visit the
+        <a href='https://cruzid.ucsc.edu/'>CruzID Manager</a> to change your 
+        password, or visit the <a href='http://campusdirectory.ucsc.edu/'>Campus 
+        Directory</a> to make changes to your directory information.</p>",
+      "#weight" => -100,
+    );
+
+    // LDAP Authentication disables the email address, but we want to disable username
+    // changes as well.
+    $form['account']['name']['#disabled'] = TRUE;
+    $form['account']['name']['#description'] = t('This username is automatically set to your CruzID and may not be changed.');
+
+    // Hide the status.
+    $form["account"]["status"] = array(
+      "#type" => "hidden",
+      "#value" => "1",
+    );
+
+    // Removes the other parts of the form we don't want people to access.
+    unset($form['contact']);
+    unset($form['timezone']);
+    unset($form['user_picture']);
+    unset($form['path']);
+  } else if ($form_id == 'profile') {
+    $form["top_message"]["cruzid"] = array(
+      "#type" => "fieldset",
+      "#title" => "Campus Directory Information",
+      "#description" =>
+        "<p>This account is authenticated through CruzID Blue. Therefore, the 
+         login name, password and e-mail address cannot be edited through this 
+         form. Please visit the
+        <a href='https://cruzid.ucsc.edu/'>CruzID Manager</a> to change your 
+        password, or visit the <a href='http://campusdirectory.ucsc.edu/'>Campus 
+        Directory</a> to make changes to your directory information.</p>",
+      "#weight" => -100,
+    );
+  } else if ($form_id == 'user_register') {
+    unset($form['account']['name']);
+    unset($form['account']['mail']);
+
+  }
+}
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function ucsc_user_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.ucsc_user':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Allows people to login with their CruzID and UCSC Blue password.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Add configuration.
+ */
+
+$config = \Drupal::config('ucsc_user.settings');
+
+
+/**
+ * Set create new account to admin only. We don't ever want to create new
+ * accounts, because we always want to get the information from UCSC LDAP.
+ */
+
+// Load the configuration.
+global $config;
+
+// Change the configuration.
+$config['user.settings']['register'] = 'admin_only';
+$config['contact.settings']['user_default_enabled'] = false;

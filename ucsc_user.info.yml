@@ -1,0 +1,10 @@
+name: UCSC User
+type: module
+description: Updates the user login and user information.
+core: 8.x
+package: UCSC
+dependencies:
+  - ldap_authentication
+  - ldap_authorization
+  - ldap_servers
+  - ldap_user
